@@ -7,6 +7,7 @@ import { DialogFooter, OkCancelButtonGroup, Dialog } from '../dialog'
 import { Dispatcher } from '../dispatcher'
 import { OpenPullRequestDialogHeader } from './open-pull-request-header'
 import { PullRequestFilesChanged } from './pull-request-files-changed'
+import { PullRequestMergeStatus } from './pull-request-merge-status'
 
 interface IOpenPullRequestDialogProps {
   readonly repository: Repository
@@ -137,8 +138,10 @@ export class OpenPullRequestDialog extends React.Component<IOpenPullRequestDialo
   }
 
   private renderFooter() {
+    const { mergeStatus } = this.props.pullRequestState
     return (
       <DialogFooter>
+        <PullRequestMergeStatus mergeStatus={mergeStatus} />
         <OkCancelButtonGroup
           okButtonText="Create Pull Request"
           okButtonTitle="Create pull request on GitHub."

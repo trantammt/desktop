@@ -22,4 +22,12 @@
   .open-pull-request-content {
     padding: var(--spacing);
   }
+
+  .dialog-footer {
+    flex-direction: row;
+  }
+
+  .pull-request-merge-status {
+    flex-grow: 1;
+  }
 }
