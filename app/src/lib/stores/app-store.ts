@@ -1484,7 +1484,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     onLoad: (mergeTreeResult: MergeTreeResult | null) => void,
     cleanup: () => void
   ) {
-    const mergeTreePromise = promiseWithMinimumTimeout(
+    return promiseWithMinimumTimeout(
       () => determineMergeability(repository, baseBranch, compareBranch),
       500
     )
@@ -1496,19 +1496,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
         return null
       })
       .then(mergeStatus => {
-        this.repositoryStateCache.updateCompareState(repository, () => ({
-          mergeStatus,
-        }))
-
-        this.emitUpdate()
+        onLoad(mergeStatus)
       })
       .finally(() => {
-        this.currentMergeTreePromise = null
+        cleanup()
       })
-
-    this.currentMergeTreePromise = mergeTreePromise
-
-    return this.currentMergeTreePromise
   }
 
   /** This shouldn't be called directly. See `Dispatcher`. */
