@@ -470,7 +470,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private repositoryFilterText: string = ''
 
   private currentMergeTreePromise: Promise<void> | null = null
-  private currentPRMergeTreePromise: Promise<void> | null = null
 
   /** The function to resolve the current Open in Desktop flow. */
   private resolveOpenInDesktop:
@@ -1469,7 +1468,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     baseBranch: Branch,
     compareBranch: Branch,
     onLoad: (mergeTreeResult: MergeTreeResult | null) => void,
-    cleanup: () => void
+    cleanup?: () => void
   ) {
     return promiseWithMinimumTimeout(
       () => determineMergeability(repository, baseBranch, compareBranch),
@@ -1486,7 +1485,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         onLoad(mergeStatus)
       })
       .finally(() => {
-        cleanup()
+        cleanup?.()
       })
   }
 
@@ -7438,12 +7437,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     baseBranch: Branch,
     compareBranch: Branch
   ) {
-    // Not sure why we do this..following pattern from compare branch setup
-    if (this.currentPRMergeTreePromise != null) {
-      return
-    }
-
-    this.currentPRMergeTreePromise = this.setupMergabilityPromise(
+    this.setupMergabilityPromise(
       repository,
       baseBranch,
       compareBranch,
@@ -7452,9 +7446,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
           mergeStatus,
         }))
         this.emitUpdate()
-      },
-      () => {
-        this.currentPRMergeTreePromise = null
       }
     )
   }
